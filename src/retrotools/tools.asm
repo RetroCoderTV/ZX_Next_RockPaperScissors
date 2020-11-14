@@ -33,6 +33,26 @@
 	ENDM
 
 
+
+
+
+wait_hackaroo:
+    ;todo: again, why the delay so quick?
+    ld bc,0xFFFF
+    call wait_plus_raster
+    ld bc,0xFFFF
+    call wait_plus_raster
+    ld bc,0xFFFF
+    call wait_plus_raster
+    ld bc,0xFFFF
+    call wait_plus_raster
+    ld bc,0xFFFF
+    call wait_plus_raster
+	ret
+
+
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Wait for n frames
 ;; Inputs: BC=n
@@ -149,49 +169,49 @@ PlotTile8:
 
 
 
-; ;HL=mem address start yx
-; ;DE=message address
-; display_string:
-;     ld a,(de)
-;     cp 0
-;     ret z
-;     cp ' '
-;     jp nz,disp_char_next
-; 	inc a
-; disp_char_next:
-;     sub FONT_ASCII_OFFSET
-;     push de
-;     push hl
-;     call PlotTile8
-;     pop hl
-;     pop de
+;HL=mem address start yx
+;DE=message address
+display_string:
+    ld a,(de)
+    cp 0
+    ret z
+    cp ' '
+    jp nz,disp_char_next
+	inc a
+disp_char_next:
+    sub FONT_ASCII_OFFSET
+    push de
+    push hl
+    call PlotTile8
+    pop hl
+    pop de
 
-;     inc de
-;     inc l
-;     jp display_string
+    inc de
+    inc l
+    jp display_string
    
 
-; display_numbers:
-;     ld c,-100
-;     call dispnums_add_offset
-;     ld c,-10
-;     call dispnums_add_offset
-;     ld c,-1
-; dispnums_add_offset:
-;     ld b,FONT_START
-; dispnums_inc:
-;     inc b
-;     add a,c
-;     jr c, dispnums_inc
-;     sub c ;actually adding (its holding minus number)
-;     push af
-;     ld a,b
-;     push hl
-;     call PlotTile8
-;     pop hl
-;     inc l
-;     pop af
-;     ret
+display_numbers:
+    ld c,-100
+    call dispnums_add_offset
+    ld c,-10
+    call dispnums_add_offset
+    ld c,-1
+dispnums_add_offset:
+    ld b,FONT_START
+dispnums_inc:
+    inc b
+    add a,c
+    jr c, dispnums_inc
+    sub c ;actually adding (its holding minus number)
+    push af
+    ld a,b
+    push hl
+    call PlotTile8
+    pop hl
+    inc l
+    pop af
+    ret
 
 
 

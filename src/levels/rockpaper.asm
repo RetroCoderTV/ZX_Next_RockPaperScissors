@@ -87,6 +87,7 @@ draw_hands:
 
 
 init_new_turn:
+
     ld a,ATTR3_CHOOSING
     ld (player_top_attr3),a
     ld (player_bottom_attr3),a
@@ -99,6 +100,16 @@ init_new_turn:
     ld (choices_complete),a
 
     call draw_hands
+
+    ld de,string_go
+    ld a,GO_LENGTH/2
+    call show_message
+    ;todo: again, why the delay so quick?
+    call wait_hackaroo
+    ld b,GO_LENGTH
+    call delete_message
+
+    
     ret
 
 
@@ -248,28 +259,30 @@ find_winner:
     jr z, .bottom_won
     jr .ended_draw
 .top_won:
+    ld de,string_win2
+    ld a,WIN_LENGTH/2
+    call show_message
+
     ld hl,player_top_score
     inc (hl)
     jr .complete_turn
 .bottom_won:
-    ld hl,player_bottom_score
+    ld de,string_win1
+    ld a,WIN_LENGTH/2
+    call show_message
+
     inc (hl)
     jr .complete_turn
 .ended_draw:
-    ;todo: there will be a message saying "draw!"
+    ld de,string_draw
+    ld a,DRAW_LENGTH/2
+    call show_message
 .complete_turn:
     ;todo: figure out why these delays are so fast
-    ld bc,0xFFFF
-    call wait_plus_raster
-    ld bc,0xFFFF
-    call wait_plus_raster
-    ld bc,0xFFFF
-    call wait_plus_raster
-    ld bc,0xFFFF
-    call wait_plus_raster
-    ld bc,0xFFFF
-    call wait_plus_raster
+    call wait_hackaroo
     
+    ld b,DRAW_LENGTH ;note if we changed the length of one string (P1 P2 DRAW) then this would need a rewrite
+    call delete_message
     call init_new_turn
     ret
 

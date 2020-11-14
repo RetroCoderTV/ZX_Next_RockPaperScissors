@@ -45,6 +45,7 @@ stack_top db 0
 	
 	include 'game.asm'
 	include 'levels\rockpaper.asm'
+	include 'hud.asm'
 	
 	include 'loadbins.asm'
 

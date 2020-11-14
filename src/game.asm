@@ -2,7 +2,7 @@ framecounter8 db 0
 framecounter16 dw 0
 
 
-human_player_count db 1
+human_player_count db 1 ;todo: this has not been handled yet (game kinda only makes sense for one player, not many people would play 2 player for this game)
 
 
 
