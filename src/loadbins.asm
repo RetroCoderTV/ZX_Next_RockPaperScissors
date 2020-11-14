@@ -67,7 +67,6 @@ choosing_sprite:
 	db  $25, $FF, $FF, $FF, $FF, $FF, $92, $FF, $92, $FF, $92, $FF, $FF, $92, $92, $25;
 
 
-
 rock:
 	db  $E3, $E3, $E3, $E3, $E3, $E3, $E3, $E3, $E3, $E3, $E3, $E3, $E3, $E3, $E3, $E3;
 	db  $E3, $E3, $E3, $E3, $E3, $E3, $E3, $E3, $E3, $E3, $E3, $E3, $E3, $E3, $E3, $E3;

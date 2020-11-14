@@ -1,5 +1,4 @@
-FONT_START equ 14
-FONT_ASCII_OFFSET equ 33
+
 
 
 string_space db ' ',0
@@ -13,9 +12,13 @@ DRAW_LENGTH equ ($-string_draw)-1
 
 MESSAGE_X equ 16 
 MESSAGE_Y equ 11
+SCORE_X equ 31
+P1_SCORE_Y equ 23
+P2_SCORE_Y equ 0
 
 ;INPUT:
 ;DE=message ptr
+;A=half length of string
 show_message:
     ld l,a
     ld a,MESSAGE_X
@@ -52,4 +55,52 @@ delete_message:
     inc l
     djnz .do_del
     
+    ret
+
+show_scores:
+    ld b,'0'
+    ld a,(player_top_score)
+    add a,b
+    sub FONT_ASCII_OFFSET
+    ld l,SCORE_X
+    ld h,P2_SCORE_Y
+    call PlotTile8
+
+    ld b,'0'
+    ld a,(player_bottom_score)
+    add a,b
+    sub FONT_ASCII_OFFSET
+    ld l,SCORE_X
+    ld h,P1_SCORE_Y
+    call PlotTile8
+
+    ret
+
+
+
+clear_screen_fonts:
+    ld h,0
+    ld l,0
+    ld a,' '+1
+    sub FONT_ASCII_OFFSET
+    ld b,a
+.clear_line:
+    push hl
+    push de
+    push bc
+    ld a,b
+    call PlotTile8
+    pop bc
+    pop de
+    pop hl
+    inc l
+    ld a,l
+    cp ZX48_SCREEN_WIDTH_CELLS
+    jr c, .clear_line
+    inc h
+    ld l,0
+    ld a,h
+    cp ZX48_SCREEN_HEIGHT_CELLS
+    jr c, .clear_line
+
     ret

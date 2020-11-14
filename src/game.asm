@@ -1,12 +1,3 @@
-framecounter8 db 0
-framecounter16 dw 0
-
-
-human_player_count db 1 ;todo: this has not been handled yet (game kinda only makes sense for one player, not many people would play 2 player for this game)
-
-
-
-
 game_init:
     ; call layer2_init
 
@@ -24,25 +15,17 @@ game_init:
     call sprites_init
     
 
-    call init_new_turn
+    call init_new_match
 
 
     ret
 
 
 game_update:
+    ld a,r ;todo: this is just here to check if it helped with the other ld a.r we actually use
     call check_keys
-    ld b,11
-    call WaitRasterLine
 
-    ld a,(framecounter8)
-    inc a
-    ld (framecounter8),a
-
-    ld hl,(framecounter16)
-    inc hl
-    ld (framecounter16),hl
-
+    
     
     
     call rockpaper_update

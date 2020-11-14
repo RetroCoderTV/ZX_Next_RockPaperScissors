@@ -1,4 +1,4 @@
-
+sjasm_stuff:
     OPT --syntax=abfw     ; recommended sub-syntax of current sjasmplus
     ; "a" - multi-arguments for instructions require double-comma, i.e. `push hl,,de,,bc`
     ;     - this helps to avoid common pitfalls like `sub a,a` becoming 2x `sub a` in default syntax
@@ -15,7 +15,7 @@
 
     DEVICE ZXSPECTRUMNEXT
 	CSPECTMAP main.map
-
+;
 
 start:
 	di

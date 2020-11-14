@@ -85,10 +85,10 @@ wait_plus_raster:
 ;; Destroys: 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 WaitRasterLine:
-	call RastererWait
+	call RasterWait
 	djnz WaitRasterLine
 	ret
-RastererWait: 
+RasterWait: 
 	push bc 
 	ld e,16 : ld a,$1f : ld bc,$243b : out (c),a : inc b 
 WaitForLinea: 
@@ -166,7 +166,8 @@ PlotTile8:
 
 
 
-
+FONT_START equ 14
+FONT_ASCII_OFFSET equ 33
 
 
 ;HL=mem address start yx
@@ -176,9 +177,9 @@ display_string:
     cp 0
     ret z
     cp ' '
-    jp nz,disp_char_next
+    jp nz,disp_char
 	inc a
-disp_char_next:
+disp_char:
     sub FONT_ASCII_OFFSET
     push de
     push hl
@@ -212,6 +213,8 @@ dispnums_inc:
     inc l
     pop af
     ret
+
+
 
 
 

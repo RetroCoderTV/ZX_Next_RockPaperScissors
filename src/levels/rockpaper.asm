@@ -41,14 +41,13 @@ player_bottom_score db 0
 
 
 draw_hands:
-    ; BREAKPOINT
     ld a,PLAYERS_TOP
     nextreg $34,a
     
     ld a,HANDS_X ;minus 32 due to mirroring
     nextreg $35,a
 
-    xor a
+    xor a ;Y=0
     nextreg $36,a
     
     ld a,PLAYER_TOP_ATTR2
@@ -68,7 +67,7 @@ draw_hands:
     ld a,HANDS_X
     nextreg $35,a
 
-    ld a,FULLSCREEN_HEIGHT-HANDS_HEIGHT
+    ld a,FULLSCREEN_HEIGHT-HANDS_HEIGHT ;Y
     nextreg $36,a
     
     ld a,PLAYER_BOTTOM_ATTR2
@@ -83,7 +82,15 @@ draw_hands:
     ret
 ;
 
+init_new_match:
+    call clear_screen_fonts
 
+    xor a
+    ld (player_top_score),a
+    ld (player_bottom_score),a
+
+    call init_new_turn
+    ret 
 
 
 init_new_turn:
@@ -108,6 +115,8 @@ init_new_turn:
     call wait_hackaroo
     ld b,GO_LENGTH
     call delete_message
+
+    call show_scores
 
     
     ret
@@ -271,6 +280,7 @@ find_winner:
     ld a,WIN_LENGTH/2
     call show_message
 
+    ld hl,player_bottom_score
     inc (hl)
     jr .complete_turn
 .ended_draw:
@@ -280,15 +290,62 @@ find_winner:
 .complete_turn:
     ;todo: figure out why these delays are so fast
     call wait_hackaroo
+
+    call show_scores
     
     ld b,DRAW_LENGTH ;note if we changed the length of one string (P1 P2 DRAW) then this would need a rewrite
     call delete_message
+
+
+    ld a,(player_bottom_score)
+    cp 3
+    jr nc, .winner_bottom
+
+    ld a,(player_top_score)
+    cp 3
+    jr nc, .winner_top
+
     call init_new_turn
     ret
+.winner_top:
+    ld l,0
+    ld h,0
+    ld de,string_win2
+    jr .fill_line
+.winner_bottom:
+    ld l,0
+    ld h,0
+    ld de,string_win1
+    jr .fill_line
+.fill_line:
+    push hl
+    push de
+    push bc
+    call display_string
+    pop bc
+    pop de
+    pop hl
+    ld a,l
+    add a,WIN_LENGTH
+    ld l,a
+    cp 31-WIN_LENGTH
+    jr c, .fill_line
+    ld a,h
+    cp ZX48_SCREEN_HEIGHT_CELLS-2
+    jr nc, .begin_next_match
+    inc h
+    inc h
 
-;(nb. P1 is bottom player, P2 is either AI or human)
-;messages
-;GO!
-;P1 WIN!
-;P2 WIN!
-;DRAW!
+    ld l,0
+    jr c, .fill_line
+
+.begin_next_match:
+    call wait_hackaroo
+    call wait_hackaroo
+    call wait_hackaroo
+
+    call init_new_match
+    ret
+
+
+
