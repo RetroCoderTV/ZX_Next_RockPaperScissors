@@ -10,7 +10,7 @@ human_player_count db 1 ;todo: this has not been handled yet (game kinda only ma
 game_init:
     ; call layer2_init
 
-    nextreg $15, %00001011 ;sprites/layers system register
+    nextreg $15, %00000111 ;sprites/layers system register
     nextreg $43, %00110000 ;enhanced ula control register
     nextreg $68, %10000000 ;ula control register
 
