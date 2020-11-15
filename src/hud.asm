@@ -1,6 +1,3 @@
-
-
-
 string_space db ' ',0
 string_go db 'GO!',0
 GO_LENGTH equ ($-string_go)-1
@@ -15,6 +12,10 @@ MESSAGE_Y equ 11
 SCORE_X equ 31
 P1_SCORE_Y equ 23
 P2_SCORE_Y equ 0
+
+
+
+
 
 ;INPUT:
 ;DE=message ptr
@@ -41,7 +42,6 @@ delete_message:
     sub b
     pop bc
     ld l,a
-    
 .do_del:  
     ld h,MESSAGE_Y
     ld de, string_space
