@@ -1,6 +1,7 @@
 string_space db ' ',0
-string_go db 'GO!',0
-GO_LENGTH equ ($-string_go)-1
+string_turn1 db 'P1 CHOOSE',0
+string_turn2 db 'P2 CHOOSE',0
+TURN_LENGTH equ ($-string_turn2)-1
 string_win1 db 'P1 WIN!',0
 string_win2 db 'P2 WIN!',0
 WIN_LENGTH equ ($-string_win2)-1
@@ -27,6 +28,17 @@ show_message:
     ld l,a
     ld h,MESSAGE_Y
     call display_string
+    ret
+
+;INPUT: de=string
+display_message_turn:
+    ld a,TURN_LENGTH/2
+    call show_message
+    ;todo: again, why the delay so quick?
+
+    call wait50
+    ld b,TURN_LENGTH
+    call delete_message
     ret
 
 

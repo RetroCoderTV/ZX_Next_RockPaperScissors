@@ -13,8 +13,8 @@ sjasm_stuff:
 
     org 0x8000
 
-    DEVICE ZXSPECTRUMNEXT
-	CSPECTMAP main.map
+    DEVICE ZXSPECTRUMNEXT ;1
+	CSPECTMAP main.map ;1
 ;
 
 start:
@@ -34,9 +34,9 @@ main_loop:
 
 
 
-STACK_SIZE equ 20
-stack_bottom ds STACK_SIZE, 0
-stack_top db 0  
+STACK_SIZE equ 20 ;1
+stack_bottom ds STACK_SIZE, 0 ;1
+stack_top db 0  ;1
 
 	include 'retrotools\constants.asm'
 	include 'retrotools\tools.asm'	
@@ -51,7 +51,7 @@ stack_top db 0
 
 
 
-	SAVENEX OPEN "main.nex", start , stack_top
+	SAVENEX OPEN "main.nex", start , stack_top ;1
     SAVENEX CORE 3, 0, 0      
     SAVENEX CFG 0, 0            
 	SAVENEX AUTO

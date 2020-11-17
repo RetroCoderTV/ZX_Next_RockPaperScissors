@@ -24,9 +24,6 @@ game_init:
 game_update:
     ld a,r ;todo: this is just here to check if it helped with the other ld a.r we actually use
     call check_keys
-
-    
-    
     
     call rockpaper_update
     

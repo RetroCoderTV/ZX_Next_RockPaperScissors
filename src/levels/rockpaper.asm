@@ -39,6 +39,13 @@ choices_complete db FALSE
 player_top_score db 0
 player_bottom_score db 0
 
+single_player_mode db FALSE
+
+
+
+
+
+
 
 draw_hands:
     ld a,PLAYERS_TOP
@@ -108,13 +115,8 @@ init_new_turn:
 
     call draw_hands
 
-    ld de,string_go
-    ld a,GO_LENGTH/2
-    call show_message
-    ;todo: again, why the delay so quick?
-    call wait_hackaroo
-    ld b,GO_LENGTH
-    call delete_message
+    ld de,string_turn1
+    call display_message_turn
 
     call show_scores
 
@@ -123,7 +125,9 @@ init_new_turn:
 
 
 
+
 rockpaper_update:
+
 
     ld a,(choices_complete)
     cp TRUE
@@ -184,8 +188,28 @@ get_choice_bottom:
 
 
 get_choice_top:
-    ;todo: do check if this is AI or human player
+    
+    ld de,string_turn2
+    call display_message_turn
 
+    
+    ;todo: do check if this is AI or human player
+    ld a,(single_player_mode)
+    cp TRUE
+    jp z, .choose_random
+
+.get_choice_top_human:
+    ;todo: show message saying to press "R P or S" (or just create buttons)
+    ld a,(keypressed_R)
+    cp TRUE
+    jp z, .rock
+    ld a,(keypressed_P)
+    cp TRUE
+    jp z, .paper
+    ld a,(keypressed_S)
+    cp TRUE
+    jp z, .scissors
+    ret
     ;if AI...
 .choose_random:
     ld a,r ;getRand
@@ -201,7 +225,7 @@ get_choice_top:
     cp SCISSORS
     jr z, .scissors
 
-    ;if here its error:
+    ;if here its an error:
     BREAKPOINT
 .rock:
     ld a,ATTR3_ROCK
@@ -289,7 +313,7 @@ find_winner:
     call show_message
 .complete_turn:
     ;todo: figure out why these delays are so fast
-    call wait_hackaroo
+    call wait50
 
     call show_scores
     
@@ -340,9 +364,8 @@ find_winner:
     jr c, .fill_line
 
 .begin_next_match:
-    call wait_hackaroo
-    call wait_hackaroo
-    call wait_hackaroo
+    call wait50
+    call wait50
 
     call init_new_match
     ret

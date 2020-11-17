@@ -32,73 +32,40 @@
 	neg : add hl,a
 	ENDM
 
+TotalFrames DD 0
+TBBLUE_REGISTER_SELECT_P_243B equ $243b
 
 
-
-
-wait_hackaroo:
-    ;todo: again, why the delay so quick?
-    ld bc,0xFFFF
-    call wait_plus_raster
-    ld bc,0xFFFF
-    call wait_plus_raster
-    ld bc,0xFFFF
-    call wait_plus_raster
-    ld bc,0xFFFF
-    call wait_plus_raster
-    ld bc,0xFFFF
-    call wait_plus_raster
+wait50:
+	ld b,50
+.loop:
+	push bc
+	call WaitForScanlineUnderUla
+	pop bc
+	djnz .loop
 	ret
 
 
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Wait for n frames
-;; Inputs: BC=n
-;; Outputs: none
-;; Destroys: A,BC
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-wait:
-	dec bc
-	ld a,b
-	or c
-	jp nz, wait
-	ret
-
-wait_plus_raster:
-	ld a,11
-	call WaitRasterLine
-.wait:
-	dec bc
-	ld a,b
-	or c
-	jp nz, .wait
-	ret
-
-
-;;;em00k wrote this;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Wait for vertical blank
-;; Inputs: B=frames delay count
-;; Outputs: 
-;; Destroys: 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-WaitRasterLine:
-	call RasterWait
-	djnz WaitRasterLine
-	ret
-RasterWait: 
-	push bc 
-	ld e,16 : ld a,$1f : ld bc,$243b : out (c),a : inc b 
-WaitForLinea: 
-	in a,(c) : cp e : jr nz,WaitForLinea 
-	pop bc 
-	ret
-
-
-
-
+WaitForScanlineUnderUla:
+  
+    ; read NextReg $1F - LSB of current raster line
+        ld      bc,$243B
+        ld      a,$1F
+        out     (c),a       ; select NextReg $1F
+        inc     b           ; BC = TBBLUE_REGISTER_ACCESS_P_253B
+    ; if already at scanline 192, then wait extra whole frame (for super-fast game loops)
+.cantStartAt192:
+        in      a,(c)       ; read the raster line LSB
+        cp      244
+        jr      z,.cantStartAt192
+    ; if not yet at scanline 192, wait for it ... wait for it ...
+.waitLoop:
+        in      a,(c)       ; read the raster line LSB
+        cp      244
+        jr      nz,.waitLoop
+    ; and because the max scanline number is between 260..319 (depends on video mode),
+    ; I don't need to read MSB. 256+192 = 448 -> such scanline is not part of any mode.
+        ret
 
 
 
