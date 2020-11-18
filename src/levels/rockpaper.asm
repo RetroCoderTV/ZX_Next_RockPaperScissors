@@ -127,8 +127,6 @@ init_new_turn:
 
 
 rockpaper_update:
-
-
     ld a,(choices_complete)
     cp TRUE
     ret z
@@ -136,11 +134,11 @@ rockpaper_update:
     ld a,(player_bottom_choice)
     cp CHOOSING
     jp z, .bottoms_turn
-    call nz, .tops_turn
+    
 
     ld a,(player_top_choice)
     cp CHOOSING
-    ret z
+    jp z, .tops_turn
 
     call show_result
 
@@ -188,11 +186,12 @@ get_choice_bottom:
 
 
 get_choice_top:
-    
     ld de,string_turn2
     call display_message_turn
-
     
+    call check_keys
+
+
     ;todo: do check if this is AI or human player
     ld a,(single_player_mode)
     cp TRUE
