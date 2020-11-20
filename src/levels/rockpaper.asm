@@ -127,6 +127,8 @@ init_new_turn:
 
 
 rockpaper_update:
+    call check_keys
+    
     ld a,(choices_complete)
     cp TRUE
     ret z
@@ -212,7 +214,7 @@ get_choice_top:
     ;if AI...
 .choose_random:
     ld a,r ;getRand
-    and %00000011 ;3
+    and %00000011 ;a<=3
     cp 0
     jr z, .choose_random
 
@@ -224,8 +226,6 @@ get_choice_top:
     cp SCISSORS
     jr z, .scissors
 
-    ;if here its an error:
-    BREAKPOINT
 .rock:
     ld a,ATTR3_ROCK
     ld (player_top_attr3),a
